@@ -24,6 +24,47 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Pastikan Struktur Folder & package.json Siap
+        run: |
+          # Buat package.json otomatis jika belum ada di root
+          if [ ! -f package.json ]; then
+            cat << 'EOF' > package.json
+          {
+            "name": "sikayo-app",
+            "version": "1.0.0",
+            "description": "Aplikasi SIKAYO Super App",
+            "dependencies": {
+              "@capacitor/android": "^6.0.0",
+              "@capacitor/cli": "^6.0.0",
+              "@capacitor/core": "^6.0.0"
+            }
+          }
+          EOF
+          fi
+
+          # Buat capacitor.config.json otomatis jika belum ada di root
+          if [ ! -f capacitor.config.json ]; then
+            cat << 'EOF' > capacitor.config.json
+          {
+            "appId": "com.sikayo.app",
+            "appName": "SIKAYO",
+            "webDir": "www",
+            "server": {
+              "cleartext": true
+            },
+            "android": {
+              "backgroundColor": "#0066FF"
+            }
+          }
+          EOF
+          fi
+
+          # Pastikan folder www/index.html ada (jika index.html ditaruh di luar, pindahkan ke www/)
+          mkdir -p www
+          if [ ! -f www/index.html ] && [ -f index.html ]; then
+            cp index.html www/index.html
+          fi
+
       - name: Install Dependencies & Init Android
         run: |
           npm install
