@@ -383,16 +383,16 @@
     // Sinkronisasi awal ke MySQL API
     async function initSyncMySQL() {
       try {
-        const res = await fetch(`${API_URL}/user/${USER_ID}`);
+        const res = await fetch(`${API_URL}?action=get_user&id=${USER_ID}`);
         if (res.ok) {
           const user = await res.json();
           if (user.saldo !== undefined) state.saldo = Number(user.saldo);
           if (user.xp !== undefined) state.xp = Number(user.xp);
-          document.getElementById('db-status').textContent = 'MySQL Live';
+          document.getElementById('db-status').textContent = 'Hostinger Live';
           await loadOrders();
-          const pRes = await fetch(`${API_URL}/promos`);
+          const pRes = await fetch(`${API_URL}?action=get_promos`);
           if (pRes.ok) state.promos = await pRes.json();
-          const cRes = await fetch(`${API_URL}/chats/${USER_ID}`);
+          const cRes = await fetch(`${API_URL}?action=get_chats&user_id=${USER_ID}`);
           if (cRes.ok) state.chats = await cRes.json();
         }
       } catch (e) {
@@ -403,81 +403,16 @@
 
     async function loadOrders() {
       try {
-        const res = await fetch(`${API_URL}/orders/${USER_ID}`);
+        const res = await fetch(`${API_URL}?action=get_orders&user_id=${USER_ID}`);
         if (res.ok) state.orders = await res.json();
       } catch (e) {}
       renderOrders();
     }
 
-    function switchTab(tab) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.getElementById('tab-' + tab).classList.remove('hidden');
-      document.querySelectorAll('.nav-btn').forEach(b => {
-        b.classList.remove('text-blue-600');
-        b.classList.add('text-slate-400');
-      });
-      const nav = document.getElementById('nav-' + tab);
-      if (nav) {
-        nav.classList.remove('text-slate-400');
-        nav.classList.add('text-blue-600');
-      }
-    }
-
-    // Pencarian Menu Real-Time
-    function filterMenus() {
-      const q = document.getElementById('search-input').value.toLowerCase();
-      document.querySelectorAll('.menu-item').forEach(item => {
-        const keywords = item.getAttribute('data-name');
-        item.style.display = keywords.includes(q) ? 'flex' : 'none';
-      });
-    }
-
-    function closeModal() {
-      const m = document.getElementById('dynamic-modal');
-      m.classList.add('hidden');
-      m.classList.remove('flex');
-    }
-
-    function showModal(title, htmlContent) {
-      document.getElementById('modal-title').textContent = title;
-      document.getElementById('modal-body').innerHTML = htmlContent;
-      const m = document.getElementById('dynamic-modal');
-      m.classList.remove('hidden');
-      m.classList.add('flex');
-      lucide.createIcons();
-    }
-
-    // 1. MODAL QRIS BAYAR
-    function openQrisModal() {
-      showModal('Bayar Instan QRIS', `
-        <div class="text-center space-y-3 py-2">
-          <div class="w-44 h-44 mx-auto bg-blue-50 border-2 border-dashed border-blue-600 rounded-2xl flex flex-col items-center justify-center text-blue-600">
-            <i data-lucide="qr-code" class="w-20 h-20"></i>
-            <span class="text-[10px] font-bold mt-2">SIKAYO QRIS</span>
-          </div>
-          <input id="qris-merchant" type="text" placeholder="Nama Toko / Merchant" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs" />
-          <input id="qris-nominal" type="number" placeholder="Nominal Bayar (Rp)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs" />
-          <button onclick="submitOrder('KayoPay QRIS', 'Scan QRIS', document.getElementById('qris-merchant').value || 'Merchant QRIS', Number(document.getElementById('qris-nominal').value || 20000))" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Konfirmasi Pembayaran</button>
-        </div>
-      `);
-    }
-
-    // 2. MODAL TOP UP SALDO
-    function openTopupModal() {
-      showModal('Isi Saldo KayoPay', `
-        <div class="grid grid-cols-2 gap-2.5">
-          <button onclick="processTopup(50000)" class="p-3 border border-blue-200 bg-blue-50/50 rounded-xl font-bold text-blue-700 text-sm">+ Rp 50.000</button>
-          <button onclick="processTopup(100000)" class="p-3 border border-blue-200 bg-blue-50/50 rounded-xl font-bold text-blue-700 text-sm">+ Rp 100.000</button>
-          <button onclick="processTopup(250000)" class="p-3 border border-blue-200 bg-blue-50/50 rounded-xl font-bold text-blue-700 text-sm">+ Rp 250.000</button>
-          <button onclick="processTopup(500000)" class="p-3 border border-blue-200 bg-blue-50/50 rounded-xl font-bold text-blue-700 text-sm">+ Rp 500.000</button>
-        </div>
-      `);
-    }
-
     async function processTopup(nominal) {
       state.saldo += nominal;
       try {
-        const res = await fetch(`${API_URL}/topup`, {
+        const res = await fetch(`${API_URL}?action=topup`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: USER_ID, nominal })
@@ -489,104 +424,9 @@
       } catch (e) {}
       updateUI();
       closeModal();
-      showToast(`Top Up ${formatRp(nominal)} berhasil masuk ke MySQL!`);
+      showToast(`Top Up ${formatRp(nominal)} tersimpan di Hostinger!`);
     }
 
-    // 3. MODAL SEMUA LAYANAN (8 MENU UTAMA + LAYANAN TAMBAHAN)
-    function openServiceModal(service) {
-      let formHTML = '';
-
-      if (service === 'KayoRide' || service === 'KayoCar') {
-        const basePrice = service === 'KayoRide' ? 15000 : 32000;
-        formHTML = `
-          <input id="f-jemput" type="text" value="Lokasi Saya Saat Ini" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
-          <input id="f-tujuan" type="text" placeholder="Masukkan tujuan perjalanan..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
-          <select id="f-harga" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold">
-            <option value="${basePrice}">Jarak Dekat (< 5 km) - ${formatRp(basePrice)}</option>
-            <option value="${basePrice + 12000}">Jarak Menengah (5 - 12 km) - ${formatRp(basePrice + 12000)}</option>
-            <option value="${basePrice + 25000}">Jarak Jauh (> 12 km) - ${formatRp(basePrice + 25000)}</option>
-          </select>
-          <button onclick="submitOrder('${service}', document.getElementById('f-jemput').value, document.getElementById('f-tujuan').value || 'Pusat Kota', Number(document.getElementById('f-harga').value))" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Pesan ${service}</button>
-        `;
-      } else if (service === 'KayoFood' || service === 'KayoMart') {
-        const items = service === 'KayoFood'
-          ? [
-              { name: 'Ayam Geprek Sambal Matah + Es Teh', price: 25000 },
-              { name: 'Nasi Goreng Spesial SIKAYO', price: 28000 },
-              { name: 'Kopi Susu Gula Aren Literan', price: 45000 }
-            ]
-          : [
-              { name: 'Paket Sembako Hemat (Beras 5kg + Minyak)', price: 85000 },
-              { name: 'Buah Segar & Sayuran Harian', price: 35000 },
-              { name: 'Snack & Minuman Keluarga', price: 30000 }
-            ];
-        formHTML = `
-          <input id="f-alamat" type="text" value="Alamat Rumah Saya" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
-          <select id="f-item" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold">
-            ${items.map(i => `<option value="${i.price}|${i.name}">${i.name} - ${formatRp(i.price)}</option>`).join('')}
-          </select>
-          <button onclick="const [p, n] = document.getElementById('f-item').value.split('|'); submitOrder('${service}', document.getElementById('f-alamat').value, n, Number(p))" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Pesan & Antar Sekarang</button>
-        `;
-      } else if (service === 'KayoSend') {
-        formHTML = `
-          <input id="f-asal" type="text" value="Lokasi Penjemputan Paket" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
-          <input id="f-penerima" type="text" placeholder="Nama & Alamat Penerima..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
-          <select id="f-paket" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold">
-            <option value="18000">Instant Bike (Maks. 5 kg) - Rp 18.000</option>
-            <option value="45000">Instant Car (Maks. 20 kg) - Rp 45.000</option>
-          </select>
-          <button onclick="submitOrder('KayoSend', document.getElementById('f-asal').value, document.getElementById('f-penerima').value || 'Penerima Dalam Kota', Number(document.getElementById('f-paket').value))" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Kirim Paket</button>
-        `;
-      } else if (service === 'KayoTagihan' || service === 'KayoPulsa') {
-        const isPulsa = service === 'KayoPulsa';
-        formHTML = `
-          <input id="f-nomor" type="text" placeholder="${isPulsa ? 'Masukkan Nomor HP (08xx)...' : 'Masukkan ID Pelanggan PLN / PDAM...'}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
-          <select id="f-nominal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold">
-            <option value="25000">${isPulsa ? 'Pulsa / Data 25.000' : 'Token Listrik PLN 25.000'} - Rp 25.000</option>
-            <option value="50000">${isPulsa ? 'Pulsa / Data 50.000' : 'Tagihan PDAM / PLN 50.000'} - Rp 50.000</option>
-            <option value="100000">${isPulsa ? 'Paket Data Unlimited 100.000' : 'Tagihan Listrik 100.000'} - Rp 100.000</option>
-          </select>
-          <button onclick="submitOrder('${service}', 'KayoPay Digital', document.getElementById('f-nomor').value || '081234567890', Number(document.getElementById('f-nominal').value))" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Bayar Sekarang</button>
-        `;
-      } else {
-        // Layanan Tambahan (KayoMed, KayoBox, KayoClean, KayoTix)
-        formHTML = `
-          <input id="f-detail" type="text" placeholder="Masukkan alamat / detail pesanan ${service}..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
-          <button onclick="submitOrder('${service}', 'Lokasi Saya', document.getElementById('f-detail').value || 'Layanan ${service}', 35000)" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Pesan ${service} (Rp 35.000)</button>
-        `;
-      }
-
-      showModal(service, formHTML);
-    }
-
-    function openMoreServicesModal() {
-      showModal('Semua Layanan SIKAYO', `
-        <div class="grid grid-cols-2 gap-3">
-          <button onclick="openServiceModal('KayoMed')" class="p-3 bg-blue-50 rounded-xl flex items-center gap-2.5 text-left">
-            <i data-lucide="pill" class="w-6 h-6 text-blue-600"></i>
-            <div><p class="text-xs font-bold">KayoMed</p><p class="text-[10px] text-slate-500">Apotek & Obat</p></div>
-          </button>
-          <button onclick="openServiceModal('KayoBox')" class="p-3 bg-sky-50 rounded-xl flex items-center gap-2.5 text-left">
-            <i data-lucide="truck" class="w-6 h-6 text-sky-600"></i>
-            <div><p class="text-xs font-bold">KayoBox</p><p class="text-[10px] text-slate-500">Angkut Barang</p></div>
-          </button>
-          <button onclick="openServiceModal('KayoClean')" class="p-3 bg-indigo-50 rounded-xl flex items-center gap-2.5 text-left">
-            <i data-lucide="sparkles" class="w-6 h-6 text-indigo-600"></i>
-            <div><p class="text-xs font-bold">KayoClean</p><p class="text-[10px] text-slate-500">Bersih Rumah</p></div>
-          </button>
-          <button onclick="openServiceModal('KayoTix')" class="p-3 bg-cyan-50 rounded-xl flex items-center gap-2.5 text-left">
-            <i data-lucide="film" class="w-6 h-6 text-cyan-600"></i>
-            <div><p class="text-xs font-bold">KayoTix</p><p class="text-[10px] text-slate-500">Tiket Bioskop</p></div>
-          </button>
-        </div>
-      `);
-    }
-
-    function openInfoModal(title, text) {
-      showModal(title, `<p class="text-xs text-slate-600 whitespace-pre-line leading-relaxed">${text}</p>`);
-    }
-
-    // EKSEKUSI PESANAN KE MYSQL
     async function submitOrder(layanan, lokasi_jemput, tujuan_atau_detail, hargaAsli) {
       let diskon = state.activePromo ? Number(state.activePromo.potongan) : 0;
       let total_harga = Math.max(0, hargaAsli - diskon);
@@ -596,9 +436,8 @@
         return;
       }
 
-      // Kirim ke Backend MySQL
       try {
-        const res = await fetch(`${API_URL}/orders`, {
+        const res = await fetch(`${API_URL}?action=create_order`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: USER_ID, layanan, lokasi_jemput, tujuan_atau_detail, total_harga })
@@ -609,7 +448,7 @@
           state.xp = Number(data.xp);
           await loadOrders();
         } else {
-          throw new Error('Offline fallback');
+          throw new Error();
         }
       } catch (e) {
         state.saldo -= total_harga;
@@ -623,53 +462,6 @@
       showToast(`Pesanan ${layanan} berhasil disimpan!`);
     }
 
-    function applyPromo(kode, potongan) {
-      state.activePromo = { kode, potongan };
-      updateUI();
-      showToast(`Voucher ${kode} aktif (-${formatRp(potongan)}) untuk pesanan berikutnya!`);
-    }
-
-    function renderOrders() {
-      const container = document.getElementById('order-history-list');
-      container.innerHTML = state.orders.map(o => `
-        <div class="border border-blue-100 bg-blue-50/30 rounded-xl p-3.5 flex items-center justify-between">
-          <div>
-            <span class="text-[10px] font-bold bg-blue-600 text-white px-2 py-0.5 rounded-full">${o.layanan}</span>
-            <h4 class="text-sm font-bold text-slate-800 mt-1">${o.tujuan_atau_detail}</h4>
-            <p class="text-[11px] text-slate-500">Dari: ${o.lokasi_jemput} • <b>${o.status}</b></p>
-          </div>
-          <span class="text-xs font-extrabold text-blue-700">${formatRp(o.total_harga)}</span>
-        </div>
-      `).join('');
-    }
-
-    function renderPromos() {
-      const container = document.getElementById('promo-list');
-      container.innerHTML = state.promos.map(p => `
-        <div class="border border-blue-100 bg-blue-50/40 rounded-xl p-3.5 flex items-center justify-between">
-          <div>
-            <h4 class="text-sm font-bold text-slate-800">${p.judul}</h4>
-            <p class="text-xs text-slate-500">${p.deskripsi}</p>
-            <span class="text-[10px] font-bold text-blue-600">Kode: ${p.kode}</span>
-          </div>
-          <button onclick="applyPromo('${p.kode}', ${p.potongan})" class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg">Pakai</button>
-        </div>
-      `).join('');
-    }
-
-    function renderChats() {
-      const container = document.getElementById('chat-messages');
-      container.innerHTML = state.chats.map(c => `
-        <div class="flex flex-col ${c.is_user ? 'items-end' : 'items-start'}">
-          <span class="text-[10px] text-slate-400 mb-0.5">${c.pengirim}</span>
-          <div class="px-3.5 py-2 rounded-2xl text-xs max-w-[80%] ${c.is_user ? 'bg-blue-600 text-white rounded-br-none' : 'bg-slate-100 text-slate-800 rounded-bl-none'}">
-            ${c.pesan}
-          </div>
-        </div>
-      `).join('');
-      container.scrollTop = container.scrollHeight;
-    }
-
     async function sendChat() {
       const input = document.getElementById('chat-input');
       const pesan = input.value.trim();
@@ -680,26 +472,18 @@
       renderChats();
 
       try {
-        const res = await fetch(`${API_URL}/chats`, {
+        const res = await fetch(`${API_URL}?action=send_chat`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user_id: USER_ID, pesan })
         });
         if (res.ok) {
-          const cRes = await fetch(`${API_URL}/chats/${USER_ID}`);
+          const cRes = await fetch(`${API_URL}?action=get_chats&user_id=${USER_ID}`);
           if (cRes.ok) state.chats = await cRes.json();
-        } else {
-          throw new Error();
         }
-      } catch (e) {
-        setTimeout(() => {
-          state.chats.push({ pengirim: 'Bantuan SIKAYO 24/7', pesan: 'Pesan diterima. Tim SIKAYO siap membantu!', is_user: false });
-          renderChats();
-        }, 500);
-      }
+      } catch (e) {}
       renderChats();
     }
-
     // Jalankan saat aplikasi dibuka
     initSyncMySQL();
   </script>
