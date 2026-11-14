@@ -1,0 +1,11 @@
+{
+  "appId": "com.sikayo.app",
+  "appName": "SIKAYO",
+  "webDir": "www",
+  "server": {
+    "cleartext": false
+  },
+  "android": {
+    "backgroundColor": "#0066FF"
+  }
+}
