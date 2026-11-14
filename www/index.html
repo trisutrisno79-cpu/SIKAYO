@@ -5,48 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>SIKAYO - Super App Biru Putih</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #F4F7FB;
+    * {
+      box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #F4F7FB;
+      color: #1E293B;
+      margin: 0;
+      padding-bottom: 90px;
       user-select: none;
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .glass-blue { background: linear-gradient(135deg, #0066FF 0%, #0044CC 100%); }
-    .card-shadow { box-shadow: 0 4px 20px rgba(0, 102, 255, 0.08); }
+    .card-shadow { box-shadow: 0 4px 18px rgba(0, 102, 255, 0.08); }
+    button { cursor: pointer; }
   </style>
 </head>
-<body class="text-slate-800 pb-24">
+<body>
 
-  <!-- HEADER & PENCARIAN REAL-TIME -->
+  <!-- HEADER & SEARCH BAR -->
   <header class="glass-blue text-white pt-4 pb-12 px-4 rounded-b-[28px] sticky top-0 z-30 shadow-md">
     <div class="max-w-md mx-auto">
       <div class="flex items-center justify-between mb-3">
+        <!-- Logo SIKAYO -->
         <div class="bg-white text-blue-600 px-3 py-1.5 rounded-xl font-extrabold text-base tracking-tight flex items-center gap-1.5 shadow-sm">
-          <i data-lucide="zap" class="w-4 h-4 fill-blue-600"></i>
+          <svg class="w-4 h-4 fill-blue-600" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
           <span>SIKAYO</span>
         </div>
+
         <div class="flex items-center gap-2">
-          <span id="db-status" class="text-[10px] bg-white/20 px-2.5 py-1 rounded-full font-semibold">MySQL Connected</span>
-          <button onclick="openInfoModal('Notifikasi', 'Selamat datang di SIKAYO! Gunakan kode promo SIKAYOHEMAT untuk diskon kuliner.')" class="relative p-2 bg-white/15 rounded-full">
-            <i data-lucide="bell" class="w-5 h-5 text-white"></i>
+          <span id="db-status" class="text-[10px] bg-white/20 px-2.5 py-1 rounded-full font-semibold">Menghubungkan...</span>
+          <button type="button" onclick="openInfoModal('Notifikasi SIKAYO', 'Selamat datang di aplikasi SIKAYO! Gunakan kode SIKAYOHEMAT untuk potongan kuliner Rp 10.000.')" class="relative p-2 bg-white/15 rounded-full active:scale-90 transition">
+            <svg class="w-5 h-5 stroke-white fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
             <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-400 rounded-full"></span>
           </button>
         </div>
       </div>
 
-      <!-- Search Bar Aktif -->
+      <!-- Search Bar Real-Time -->
       <div class="flex items-center gap-2">
         <div class="flex-1 bg-white rounded-full px-4 py-2.5 flex items-center gap-2.5 shadow-sm">
-          <i data-lucide="search" class="w-4 h-4 text-blue-600"></i>
-          <input id="search-input" onkeyup="filterMenus()" type="text" placeholder="Cari KayoRide, Food, Pulsa, Tagihan..." class="bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none w-full" />
+          <svg class="w-4 h-4 stroke-blue-600 fill-none shrink-0" stroke-width="2.2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="search-input" oninput="filterMenus()" type="text" placeholder="Cari KayoRide, Food, Pulsa, Tagihan..." class="bg-transparent text-sm text-slate-700 placeholder-slate-400 focus:outline-none w-full" />
         </div>
-        <button onclick="switchTab('akun')" class="bg-white p-2.5 rounded-full text-blue-600 shadow-sm active:scale-95 transition">
-          <i data-lucide="user" class="w-5 h-5"></i>
+        <button type="button" onclick="switchTab('akun')" class="bg-white p-2.5 rounded-full text-blue-600 shadow-sm active:scale-90 transition">
+          <svg class="w-5 h-5 stroke-blue-600 fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         </button>
       </div>
     </div>
@@ -55,14 +62,14 @@
   <!-- KONTEN UTAMA -->
   <main class="max-w-md mx-auto px-4 -mt-8 relative z-30">
 
-    <!-- TAB 1: BERANDA -->
+    <!-- ==================== TAB 1: BERANDA ==================== -->
     <div id="tab-beranda" class="tab-content space-y-5">
 
       <!-- KARTU SALDO KAYOPAY -->
       <section class="bg-white rounded-2xl p-3.5 card-shadow border border-blue-50 flex items-center justify-between">
-        <div onclick="switchTab('pesanan')" class="bg-blue-50/80 rounded-xl p-2.5 pr-4 flex items-center gap-2.5 cursor-pointer">
+        <div onclick="switchTab('pesanan')" class="bg-blue-50/90 rounded-xl p-2.5 pr-4 flex items-center gap-2.5 cursor-pointer active:scale-95 transition">
           <div class="bg-blue-600 text-white p-2 rounded-lg">
-            <i data-lucide="wallet" class="w-5 h-5"></i>
+            <svg class="w-5 h-5 stroke-white fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
           </div>
           <div>
             <span class="text-[11px] font-bold text-blue-700 uppercase tracking-wider">KayoPay</span>
@@ -72,23 +79,26 @@
         </div>
 
         <div class="flex items-center gap-3 pr-1">
-          <button onclick="openQrisModal()" class="flex flex-col items-center gap-1">
-            <div class="bg-blue-600 text-white p-2 rounded-xl shadow-sm active:scale-90 transition">
-              <i data-lucide="qr-code" class="w-4 h-4"></i>
+          <!-- Tombol Bayar QRIS -->
+          <button type="button" onclick="openQrisModal()" class="flex flex-col items-center gap-1 active:scale-90 transition">
+            <div class="bg-blue-600 text-white p-2 rounded-xl shadow-sm">
+              <svg class="w-4 h-4 stroke-white fill-none" stroke-width="2" viewBox="0 0 24 24"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/></svg>
             </div>
             <span class="text-[11px] font-semibold text-slate-700">Bayar</span>
           </button>
 
-          <button onclick="openTopupModal()" class="flex flex-col items-center gap-1">
-            <div class="bg-blue-600 text-white p-2 rounded-xl shadow-sm active:scale-90 transition">
-              <i data-lucide="plus-circle" class="w-4 h-4"></i>
+          <!-- Tombol Isi Saldo -->
+          <button type="button" onclick="openTopupModal()" class="flex flex-col items-center gap-1 active:scale-90 transition">
+            <div class="bg-blue-600 text-white p-2 rounded-xl shadow-sm">
+              <svg class="w-4 h-4 stroke-white fill-none" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
             </div>
             <span class="text-[11px] font-semibold text-slate-700">Isi Saldo</span>
           </button>
 
-          <button onclick="openInfoModal('Eksplor KayoPay', '• KayoPay Later: Limit s.d Rp 5.000.000\n• Transfer Bank: Gratis biaya admin 10x/bulan\n• KayoInvest: Nabung emas mulai Rp 5.000')" class="flex flex-col items-center gap-1">
-            <div class="bg-blue-100 text-blue-600 p-2 rounded-xl active:scale-90 transition">
-              <i data-lucide="compass" class="w-4 h-4"></i>
+          <!-- Tombol Eksplor -->
+          <button type="button" onclick="openInfoModal('Eksplor KayoPay', '• KayoPay Later: Limit s.d Rp 5.000.000\n• Transfer Bank: Gratis biaya admin 10x/bulan\n• KayoInvest: Nabung emas mulai Rp 5.000')" class="flex flex-col items-center gap-1 active:scale-90 transition">
+            <div class="bg-blue-100 text-blue-600 p-2 rounded-xl">
+              <svg class="w-4 h-4 stroke-blue-600 fill-none" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
             </div>
             <span class="text-[11px] font-semibold text-slate-700">Eksplor</span>
           </button>
@@ -99,58 +109,66 @@
       <section class="bg-white rounded-2xl p-4 card-shadow border border-slate-100">
         <div id="menu-grid" class="grid grid-cols-4 gap-y-5 gap-x-2 text-center">
 
-          <button data-name="kayoride ojek motor" onclick="openServiceModal('KayoRide')" class="menu-item flex flex-col items-center gap-1.5">
+          <!-- 1. KayoRide -->
+          <button type="button" data-name="kayoride ojek motor" onclick="openServiceModal('KayoRide')" class="menu-item flex flex-col items-center gap-1.5 active:scale-90 transition">
             <div class="w-13 h-13 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center p-3 shadow-sm">
-              <i data-lucide="bike" class="w-7 h-7"></i>
+              <svg class="w-7 h-7 stroke-blue-600 fill-none" stroke-width="2" viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
             </div>
             <span class="text-xs font-semibold text-slate-700">KayoRide</span>
           </button>
 
-          <button data-name="kayocar taksi mobil" onclick="openServiceModal('KayoCar')" class="menu-item flex flex-col items-center gap-1.5">
+          <!-- 2. KayoCar -->
+          <button type="button" data-name="kayocar taksi mobil" onclick="openServiceModal('KayoCar')" class="menu-item flex flex-col items-center gap-1.5 active:scale-90 transition">
             <div class="w-13 h-13 rounded-2xl bg-sky-100 text-sky-600 flex items-center justify-center p-3 shadow-sm">
-              <i data-lucide="car-front" class="w-7 h-7"></i>
+              <svg class="w-7 h-7 stroke-sky-600 fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><path d="M9 17h6"/><circle cx="17" cy="17" r="2"/></svg>
             </div>
             <span class="text-xs font-semibold text-slate-700">KayoCar</span>
           </button>
 
-          <button data-name="kayofood makanan kuliner" onclick="openServiceModal('KayoFood')" class="menu-item flex flex-col items-center gap-1.5">
+          <!-- 3. KayoFood -->
+          <button type="button" data-name="kayofood makanan kuliner" onclick="openServiceModal('KayoFood')" class="menu-item flex flex-col items-center gap-1.5 active:scale-90 transition">
             <div class="w-13 h-13 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center p-3 shadow-sm">
-              <i data-lucide="utensils" class="w-7 h-7"></i>
+              <svg class="w-7 h-7 stroke-indigo-600 fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
             </div>
             <span class="text-xs font-semibold text-slate-700">KayoFood</span>
           </button>
 
-          <button data-name="kayosend kurir paket" onclick="openServiceModal('KayoSend')" class="menu-item flex flex-col items-center gap-1.5">
+          <!-- 4. KayoSend -->
+          <button type="button" data-name="kayosend kurir paket" onclick="openServiceModal('KayoSend')" class="menu-item flex flex-col items-center gap-1.5 active:scale-90 transition">
             <div class="w-13 h-13 rounded-2xl bg-blue-600 text-white flex items-center justify-center p-3 shadow-sm">
-              <i data-lucide="package" class="w-7 h-7"></i>
+              <svg class="w-7 h-7 stroke-white fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="m7.5 4.27 9 5.15"/><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
             </div>
             <span class="text-xs font-semibold text-slate-700">KayoSend</span>
           </button>
 
-          <button data-name="kayomart belanja sembako" onclick="openServiceModal('KayoMart')" class="menu-item flex flex-col items-center gap-1.5">
+          <!-- 5. KayoMart -->
+          <button type="button" data-name="kayomart belanja sembako" onclick="openServiceModal('KayoMart')" class="menu-item flex flex-col items-center gap-1.5 active:scale-90 transition">
             <div class="w-13 h-13 rounded-2xl bg-cyan-100 text-cyan-700 flex items-center justify-center p-3 shadow-sm">
-              <i data-lucide="shopping-bag" class="w-7 h-7"></i>
+              <svg class="w-7 h-7 stroke-cyan-700 fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
             </div>
             <span class="text-xs font-semibold text-slate-700">KayoMart</span>
           </button>
 
-          <button data-name="tagihan pln pdam bpjs" onclick="openServiceModal('KayoTagihan')" class="menu-item flex flex-col items-center gap-1.5">
+          <!-- 6. Tagihan -->
+          <button type="button" data-name="tagihan pln pdam bpjs" onclick="openServiceModal('KayoTagihan')" class="menu-item flex flex-col items-center gap-1.5 active:scale-90 transition">
             <div class="w-13 h-13 rounded-2xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center p-3">
-              <i data-lucide="receipt" class="w-7 h-7"></i>
+              <svg class="w-7 h-7 stroke-blue-600 fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5v-11"/></svg>
             </div>
             <span class="text-xs font-semibold text-slate-700">Tagihan</span>
           </button>
 
-          <button data-name="pulsa paket data internet" onclick="openServiceModal('KayoPulsa')" class="menu-item flex flex-col items-center gap-1.5">
+          <!-- 7. Pulsa & Data -->
+          <button type="button" data-name="pulsa paket data internet" onclick="openServiceModal('KayoPulsa')" class="menu-item flex flex-col items-center gap-1.5 active:scale-90 transition">
             <div class="w-13 h-13 rounded-2xl bg-sky-50 text-sky-600 border border-sky-200 flex items-center justify-center p-3">
-              <i data-lucide="smartphone" class="w-7 h-7"></i>
+              <svg class="w-7 h-7 stroke-sky-600 fill-none" stroke-width="2" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
             </div>
             <span class="text-xs font-semibold text-slate-700">Pulsa & Data</span>
           </button>
 
-          <button data-name="lainnya med box clean tix" onclick="openMoreServicesModal()" class="menu-item flex flex-col items-center gap-1.5">
+          <!-- 8. Lainnya -->
+          <button type="button" data-name="lainnya med box clean tix" onclick="openMoreServicesModal()" class="menu-item flex flex-col items-center gap-1.5 active:scale-90 transition">
             <div class="w-13 h-13 rounded-2xl bg-slate-100 text-slate-700 flex items-center justify-center p-3">
-              <i data-lucide="layout-grid" class="w-7 h-7"></i>
+              <svg class="w-7 h-7 stroke-slate-700 fill-none" stroke-width="2" viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
             </div>
             <span class="text-xs font-semibold text-slate-700">Lainnya</span>
           </button>
@@ -159,10 +177,10 @@
       </section>
 
       <!-- XP MEMBER BAR -->
-      <section onclick="switchTab('akun')" class="bg-gradient-to-r from-blue-600 to-sky-500 rounded-2xl p-3.5 text-white flex items-center justify-between shadow-sm cursor-pointer">
+      <section onclick="switchTab('akun')" class="bg-gradient-to-r from-blue-600 to-sky-500 rounded-2xl p-3.5 text-white flex items-center justify-between shadow-sm cursor-pointer active:scale-98 transition">
         <div class="flex items-center gap-3">
           <div class="bg-white/20 p-2 rounded-xl">
-            <i data-lucide="award" class="w-6 h-6 text-white"></i>
+            <svg class="w-6 h-6 stroke-white fill-none" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
           </div>
           <div>
             <p id="xp-display" class="text-xs font-bold">145 XP menuju Juragan Biru</p>
@@ -171,44 +189,42 @@
             </div>
           </div>
         </div>
-        <i data-lucide="chevron-right" class="w-5 h-5 text-white/80"></i>
+        <svg class="w-5 h-5 stroke-white fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
       </section>
 
       <!-- SLIDER PROMO -->
       <section class="space-y-2.5">
         <div class="flex items-center justify-between">
           <h2 class="text-base font-extrabold text-slate-800">Promo Spesial Hari Ini</h2>
-          <button onclick="switchTab('promo')" class="text-xs font-bold text-blue-600">Lihat Semua</button>
+          <button type="button" onclick="switchTab('promo')" class="text-xs font-bold text-blue-600">Lihat Semua</button>
         </div>
 
         <div class="flex gap-3 overflow-x-auto no-scrollbar pb-1">
           <div class="min-w-[270px] bg-white rounded-2xl overflow-hidden card-shadow border border-slate-100">
-            <div class="h-28 glass-blue p-4 text-white flex flex-col justify-between relative overflow-hidden">
+            <div class="h-28 glass-blue p-4 text-white flex flex-col justify-between">
               <span class="bg-white/20 text-[10px] font-bold px-2.5 py-0.5 rounded-full w-fit">KAYOFOOD</span>
               <div>
                 <h3 class="font-extrabold text-base leading-tight">Diskon Kuliner Rp 10.000</h3>
                 <p class="text-[11px] text-blue-100 mt-0.5">Otomatis memotong saat checkout</p>
               </div>
-              <i data-lucide="utensils-crossed" class="w-16 h-16 text-white/15 absolute -right-2 -bottom-2"></i>
             </div>
             <div class="p-3 flex items-center justify-between">
               <span class="text-xs font-semibold text-slate-600">Kode: <b class="text-blue-600">SIKAYOHEMAT</b></span>
-              <button onclick="applyPromo('SIKAYOHEMAT', 10000)" class="text-xs bg-blue-50 text-blue-600 font-bold px-3 py-1 rounded-full">Pakai</button>
+              <button type="button" onclick="applyPromo('SIKAYOHEMAT', 10000)" class="text-xs bg-blue-50 text-blue-600 font-bold px-3 py-1 rounded-full active:scale-90 transition">Pakai</button>
             </div>
           </div>
 
           <div class="min-w-[270px] bg-white rounded-2xl overflow-hidden card-shadow border border-slate-100">
-            <div class="h-28 bg-gradient-to-br from-sky-500 to-blue-700 p-4 text-white flex flex-col justify-between relative overflow-hidden">
+            <div class="h-28 bg-gradient-to-br from-sky-500 to-blue-700 p-4 text-white flex flex-col justify-between">
               <span class="bg-white/20 text-[10px] font-bold px-2.5 py-0.5 rounded-full w-fit">KAYORIDE & CAR</span>
               <div>
                 <h3 class="font-extrabold text-base leading-tight">Potongan Perjalanan Rp 15rb</h3>
                 <p class="text-[11px] text-blue-100 mt-0.5">Hemat ongkos berangkat kerja</p>
               </div>
-              <i data-lucide="car" class="w-16 h-16 text-white/15 absolute -right-2 -bottom-2"></i>
             </div>
             <div class="p-3 flex items-center justify-between">
               <span class="text-xs font-semibold text-slate-600">Kode: <b class="text-blue-600">GASKEUN</b></span>
-              <button onclick="applyPromo('GASKEUN', 15000)" class="text-xs bg-blue-50 text-blue-600 font-bold px-3 py-1 rounded-full">Pakai</button>
+              <button type="button" onclick="applyPromo('GASKEUN', 15000)" class="text-xs bg-blue-50 text-blue-600 font-bold px-3 py-1 rounded-full active:scale-90 transition">Pakai</button>
             </div>
           </div>
         </div>
@@ -216,57 +232,49 @@
 
     </div>
 
-    <!-- TAB 2: PROMO -->
+    <!-- ==================== TAB 2: PROMO ==================== -->
     <div id="tab-promo" class="tab-content hidden space-y-4">
       <div class="bg-white rounded-2xl p-4 card-shadow">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <h2 class="text-lg font-extrabold text-slate-800">Voucher Tersedia</h2>
-            <p id="active-promo-badge" class="text-xs text-blue-600 font-semibold">Belum ada voucher aktif</p>
-          </div>
-        </div>
+        <h2 class="text-lg font-extrabold text-slate-800">Voucher Tersedia</h2>
+        <p id="active-promo-badge" class="text-xs text-blue-600 font-semibold mb-3">Belum ada voucher aktif</p>
         <div id="promo-list" class="space-y-3"></div>
       </div>
     </div>
 
-    <!-- TAB 3: PESANAN (TERHUBUNG MYSQL) -->
+    <!-- ==================== TAB 3: PESANAN ==================== -->
     <div id="tab-pesanan" class="tab-content hidden space-y-4">
       <div class="bg-white rounded-2xl p-4 card-shadow">
         <div class="flex items-center justify-between mb-3">
           <h2 class="text-lg font-extrabold text-slate-800">Riwayat Transaksi</h2>
-          <button onclick="loadOrders()" class="text-xs text-blue-600 font-bold flex items-center gap-1">
-            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> Segarkan
-          </button>
+          <button type="button" onclick="loadOrders()" class="text-xs text-blue-600 font-bold bg-blue-50 px-3 py-1 rounded-full">Segarkan</button>
         </div>
         <div id="order-history-list" class="space-y-3"></div>
       </div>
     </div>
 
-    <!-- TAB 4: CHAT REAL-TIME -->
+    <!-- ==================== TAB 4: CHAT ==================== -->
     <div id="tab-chat" class="tab-content hidden space-y-4">
       <div class="bg-white rounded-2xl p-4 card-shadow flex flex-col h-[65vh]">
         <div class="border-b border-slate-100 pb-3 mb-3 flex items-center gap-3">
           <div class="bg-blue-600 text-white p-2 rounded-full">
-            <i data-lucide="headphones" class="w-5 h-5"></i>
+            <svg class="w-5 h-5 stroke-white fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
           </div>
           <div>
             <h2 class="text-sm font-extrabold text-slate-800">Pusat Bantuan & Driver SIKAYO</h2>
-            <p class="text-[11px] text-green-600 font-semibold">● Terhubung ke Server</p>
+            <p class="text-[11px] text-green-600 font-semibold">● Online 24/7</p>
           </div>
         </div>
 
         <div id="chat-messages" class="flex-1 overflow-y-auto space-y-2.5 pr-1"></div>
 
         <div class="pt-3 border-t border-slate-100 flex gap-2 mt-2">
-          <input id="chat-input" type="text" placeholder="Ketik pesan ke CS / Driver..." class="flex-1 bg-slate-100 rounded-full px-4 py-2 text-xs focus:outline-none" />
-          <button onclick="sendChat()" class="bg-blue-600 text-white p-2.5 rounded-full active:scale-95 transition">
-            <i data-lucide="send" class="w-4 h-4"></i>
-          </button>
+          <input id="chat-input" type="text" placeholder="Ketik pesan ke CS / Driver..." class="flex-1 bg-slate-100 rounded-full px-4 py-2.5 text-xs focus:outline-none" />
+          <button type="button" onclick="sendChat()" class="bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-bold active:scale-95 transition">Kirim</button>
         </div>
       </div>
     </div>
 
-    <!-- TAB 5: AKUN -->
+    <!-- ==================== TAB 5: AKUN ==================== -->
     <div id="tab-akun" class="tab-content hidden space-y-4">
       <div class="bg-white rounded-2xl p-5 card-shadow space-y-4">
         <div class="flex items-center gap-4">
@@ -274,68 +282,65 @@
             SK
           </div>
           <div>
-            <h2 class="text-base font-extrabold text-slate-800">Pengguna SIKAYO</h2>
+            <h2 id="akun-nama" class="text-base font-extrabold text-slate-800">Pengguna SIKAYO</h2>
             <p class="text-xs text-slate-500">+62 812-3456-7890 • ID #1</p>
             <span class="inline-block mt-1 bg-blue-50 text-blue-600 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Member Biru</span>
           </div>
         </div>
         <div class="border-t border-slate-100 pt-3 space-y-2 text-xs">
           <div class="flex justify-between py-2">
-            <span class="text-slate-500">Database Backend</span>
-            <span class="font-bold text-blue-600">MySQL (sikayo_db)</span>
+            <span class="text-slate-500">Server API</span>
+            <span id="akun-server" class="font-bold text-blue-600">Hostinger MySQL</span>
           </div>
           <div class="flex justify-between py-2">
             <span class="text-slate-500">Voucher Aktif</span>
             <span id="akun-promo" class="font-bold text-slate-800">Tidak ada</span>
           </div>
+          <button type="button" onclick="openTopupModal()" class="w-full mt-2 bg-blue-600 text-white font-bold py-2.5 rounded-xl">Isi Saldo KayoPay</button>
         </div>
       </div>
     </div>
 
   </main>
 
-  <!-- BOTTOM NAVIGATION -->
-  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200/80 z-40 px-2 py-2 shadow-lg">
+  <!-- BOTTOM NAVIGATION BAR -->
+  <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-200 z-40 px-2 py-2 shadow-lg">
     <div class="max-w-md mx-auto grid grid-cols-4 text-center">
-      <button onclick="switchTab('beranda')" id="nav-beranda" class="nav-btn text-blue-600 flex flex-col items-center gap-1">
-        <i data-lucide="home" class="w-5 h-5"></i>
+      <button type="button" onclick="switchTab('beranda')" id="nav-beranda" class="nav-btn text-blue-600 flex flex-col items-center gap-1 py-1">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span class="text-[11px] font-bold">Beranda</span>
       </button>
-      <button onclick="switchTab('promo')" id="nav-promo" class="nav-btn text-slate-400 flex flex-col items-center gap-1">
-        <i data-lucide="badge-percent" class="w-5 h-5"></i>
+      <button type="button" onclick="switchTab('promo')" id="nav-promo" class="nav-btn text-slate-400 flex flex-col items-center gap-1 py-1">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><line x1="19" x2="5" y1="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
         <span class="text-[11px] font-semibold">Promo</span>
       </button>
-      <button onclick="switchTab('pesanan')" id="nav-pesanan" class="nav-btn text-slate-400 flex flex-col items-center gap-1">
-        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+      <button type="button" onclick="switchTab('pesanan')" id="nav-pesanan" class="nav-btn text-slate-400 flex flex-col items-center gap-1 py-1">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
         <span class="text-[11px] font-semibold">Pesanan</span>
       </button>
-      <button onclick="switchTab('chat')" id="nav-chat" class="nav-btn text-slate-400 flex flex-col items-center gap-1">
-        <i data-lucide="message-circle" class="w-5 h-5"></i>
+      <button type="button" onclick="switchTab('chat')" id="nav-chat" class="nav-btn text-slate-400 flex flex-col items-center gap-1 py-1">
+        <svg class="w-5 h-5 stroke-current fill-none" stroke-width="2" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
         <span class="text-[11px] font-semibold">Chat</span>
       </button>
     </div>
   </nav>
 
   <!-- MODAL DINAMIS UNTUK SEMUA LAYANAN -->
-  <div id="dynamic-modal" class="fixed inset-0 bg-slate-900/50 z-50 hidden items-end sm:items-center justify-center">
-    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 id="modal-title" class="text-base font-extrabold text-slate-800">Layanan</h3>
-        <button onclick="closeModal()" class="p-1.5 bg-slate-100 rounded-full text-slate-500">
-          <i data-lucide="x" class="w-4 h-4"></i>
-        </button>
+  <div id="dynamic-modal" class="fixed inset-0 bg-slate-900/60 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl p-5 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <h3 id="modal-title" class="text-base font-extrabold text-slate-800">Layanan SIKAYO</h3>
+        <button type="button" onclick="closeModal()" class="p-1.5 bg-slate-100 rounded-full text-slate-600 font-bold text-xs px-2.5">✕</button>
       </div>
       <div id="modal-body" class="space-y-3"></div>
     </div>
   </div>
 
-  <!-- TOAST -->
-  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg z-50 hidden"></div>
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed top-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-full shadow-lg z-50 hidden text-center max-w-[90%]"></div>
 
   <script>
-    lucide.createIcons();
-
-    // Ganti URL ini dengan IP VPS / Domain backend Node.js MySQL Anda saat online
+    // GANTI DENGAN DOMAIN HOSTINGER ANDA
     const API_URL = 'https://smpn1tualang.id/api.php';
     const USER_ID = 1;
 
@@ -380,7 +385,7 @@
       renderChats();
     }
 
-    // Sinkronisasi awal ke MySQL API
+    // Sinkronisasi ke Database MySQL Hostinger
     async function initSyncMySQL() {
       try {
         const res = await fetch(`${API_URL}?action=get_user&id=${USER_ID}`);
@@ -394,6 +399,8 @@
           if (pRes.ok) state.promos = await pRes.json();
           const cRes = await fetch(`${API_URL}?action=get_chats&user_id=${USER_ID}`);
           if (cRes.ok) state.chats = await cRes.json();
+        } else {
+          document.getElementById('db-status').textContent = 'Mode Lokal';
         }
       } catch (e) {
         document.getElementById('db-status').textContent = 'Mode Lokal';
@@ -409,8 +416,85 @@
       renderOrders();
     }
 
+    // Navigasi Tab Bawah
+    function switchTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById('tab-' + tab);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        b.classList.remove('text-blue-600');
+        b.classList.add('text-slate-400');
+      });
+      const nav = document.getElementById('nav-' + tab);
+      if (nav) {
+        nav.classList.remove('text-slate-400');
+        nav.classList.add('text-blue-600');
+      }
+    }
+
+    // Filter Pencarian Menu
+    function filterMenus() {
+      const q = document.getElementById('search-input').value.toLowerCase();
+      document.querySelectorAll('.menu-item').forEach(item => {
+        const keywords = item.getAttribute('data-name') || '';
+        item.style.display = keywords.includes(q) ? 'flex' : 'none';
+      });
+    }
+
+    function closeModal() {
+      const m = document.getElementById('dynamic-modal');
+      m.classList.add('hidden');
+      m.classList.remove('flex');
+    }
+
+    function showModal(title, htmlContent) {
+      document.getElementById('modal-title').textContent = title;
+      document.getElementById('modal-body').innerHTML = htmlContent;
+      const m = document.getElementById('dynamic-modal');
+      m.classList.remove('hidden');
+      m.classList.add('flex');
+    }
+
+    // Modal QRIS
+    function openQrisModal() {
+      showModal('Bayar Instan QRIS', `
+        <div class="text-center space-y-3 py-1">
+          <div class="w-36 h-36 mx-auto bg-blue-50 border-2 border-dashed border-blue-600 rounded-2xl flex flex-col items-center justify-center text-blue-600">
+            <svg class="w-16 h-16 stroke-blue-600 fill-none" stroke-width="1.8" viewBox="0 0 24 24"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/></svg>
+            <span class="text-[10px] font-bold mt-1">SCAN QRIS</span>
+          </div>
+          <input id="qris-merchant" type="text" placeholder="Nama Merchant / Toko" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs" />
+          <input id="qris-nominal" type="number" placeholder="Nominal Bayar (contoh: 25000)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs" />
+          <button type="button" onclick="handleQrisSubmit()" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Konfirmasi Pembayaran</button>
+        </div>
+      `);
+    }
+
+    function handleQrisSubmit() {
+      const merchant = document.getElementById('qris-merchant').value.trim() || 'Merchant QRIS';
+      const nominal = Number(document.getElementById('qris-nominal').value) || 20000;
+      submitOrder('KayoPay QRIS', 'Scan QRIS', merchant, nominal);
+    }
+
+    // Modal Top Up Saldo
+    function openTopupModal() {
+      showModal('Isi Saldo KayoPay', `
+        <div class="grid grid-cols-2 gap-2.5">
+          <button type="button" onclick="processTopup(50000)" class="p-3.5 border border-blue-200 bg-blue-50 rounded-xl font-bold text-blue-700 text-sm">+ Rp 50.000</button>
+          <button type="button" onclick="processTopup(100000)" class="p-3.5 border border-blue-200 bg-blue-50 rounded-xl font-bold text-blue-700 text-sm">+ Rp 100.000</button>
+          <button type="button" onclick="processTopup(250000)" class="p-3.5 border border-blue-200 bg-blue-50 rounded-xl font-bold text-blue-700 text-sm">+ Rp 250.000</button>
+          <button type="button" onclick="processTopup(500000)" class="p-3.5 border border-blue-200 bg-blue-50 rounded-xl font-bold text-blue-700 text-sm">+ Rp 500.000</button>
+        </div>
+      `);
+    }
+
     async function processTopup(nominal) {
       state.saldo += nominal;
+      updateUI();
+      closeModal();
+      showToast(`Saldo bertambah ${formatRp(nominal)}!`);
+
       try {
         const res = await fetch(`${API_URL}?action=topup`, {
           method: 'POST',
@@ -420,22 +504,155 @@
         if (res.ok) {
           const data = await res.json();
           state.saldo = Number(data.saldo);
+          updateUI();
         }
       } catch (e) {}
-      updateUI();
-      closeModal();
-      showToast(`Top Up ${formatRp(nominal)} tersimpan di Hostinger!`);
     }
 
+    // Modal 8 Layanan Utama & Layanan Tambahan
+    function openServiceModal(service) {
+      let formHTML = '';
+
+      if (service === 'KayoRide' || service === 'KayoCar') {
+        const basePrice = service === 'KayoRide' ? 15000 : 32000;
+        formHTML = `
+          <input id="f-jemput" type="text" value="Lokasi Saya Saat Ini" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
+          <input id="f-tujuan" type="text" placeholder="Masukkan alamat tujuan..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
+          <select id="f-harga" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold">
+            <option value="${basePrice}">Jarak Dekat (< 5 km) - ${formatRp(basePrice)}</option>
+            <option value="${basePrice + 12000}">Jarak Menengah (5 - 12 km) - ${formatRp(basePrice + 12000)}</option>
+            <option value="${basePrice + 25000}">Jarak Jauh (> 12 km) - ${formatRp(basePrice + 25000)}</option>
+          </select>
+          <button type="button" onclick="handleTransportSubmit('${service}')" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Pesan ${service} Sekarang</button>
+        `;
+      } else if (service === 'KayoFood' || service === 'KayoMart') {
+        const items = service === 'KayoFood'
+          ? [
+              { name: 'Ayam Geprek Sambal Matah + Es Teh', price: 25000 },
+              { name: 'Nasi Goreng Spesial SIKAYO', price: 28000 },
+              { name: 'Kopi Susu Gula Aren Literan', price: 45000 }
+            ]
+          : [
+              { name: 'Paket Sembako (Beras 5kg + Minyak)', price: 85000 },
+              { name: 'Buah Segar & Sayuran Harian', price: 35000 },
+              { name: 'Snack & Minuman Keluarga', price: 30000 }
+            ];
+        formHTML = `
+          <input id="f-alamat" type="text" value="Alamat Rumah Saya" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
+          <select id="f-item" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold">
+            ${items.map(i => `<option value="${i.price}|${i.name}">${i.name} - ${formatRp(i.price)}</option>`).join('')}
+          </select>
+          <button type="button" onclick="handleFoodMartSubmit('${service}')" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Pesan & Antar Sekarang</button>
+        `;
+      } else if (service === 'KayoSend') {
+        formHTML = `
+          <input id="f-asal" type="text" value="Lokasi Penjemputan Paket" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
+          <input id="f-penerima" type="text" placeholder="Nama & Alamat Penerima..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
+          <select id="f-paket" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold">
+            <option value="18000">Instant Bike (Maks. 5 kg) - Rp 18.000</option>
+            <option value="45000">Instant Car (Maks. 20 kg) - Rp 45.000</option>
+          </select>
+          <button type="button" onclick="handleSendSubmit()" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Kirim Paket Sekarang</button>
+        `;
+      } else if (service === 'KayoTagihan' || service === 'KayoPulsa') {
+        const isPulsa = service === 'KayoPulsa';
+        formHTML = `
+          <input id="f-nomor" type="text" placeholder="${isPulsa ? 'Nomor HP (contoh: 08123456789)' : 'ID Pelanggan PLN / PDAM'}" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
+          <select id="f-nominal" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold">
+            <option value="25000">${isPulsa ? 'Pulsa / Data 25.000' : 'Token Listrik PLN 25.000'} - Rp 25.000</option>
+            <option value="50000">${isPulsa ? 'Pulsa / Data 50.000' : 'Tagihan PDAM / PLN 50.000'} - Rp 50.000</option>
+            <option value="100000">${isPulsa ? 'Paket Data Unlimited 100.000' : 'Tagihan Listrik 100.000'} - Rp 100.000</option>
+          </select>
+          <button type="button" onclick="handleDigitalSubmit('${service}')" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Bayar Sekarang</button>
+        `;
+      } else {
+        formHTML = `
+          <input id="f-detail" type="text" placeholder="Masukkan alamat / detail pesanan ${service}..." class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs font-semibold" />
+          <button type="button" onclick="handleExtraSubmit('${service}')" class="w-full glass-blue text-white font-bold py-3 rounded-xl text-xs">Pesan ${service} (Rp 35.000)</button>
+        `;
+      }
+
+      showModal(service, formHTML);
+    }
+
+    function handleTransportSubmit(service) {
+      const jemput = document.getElementById('f-jemput').value.trim() || 'Lokasi Saya';
+      const tujuan = document.getElementById('f-tujuan').value.trim() || 'Pusat Kota';
+      const harga = Number(document.getElementById('f-harga').value);
+      submitOrder(service, jemput, tujuan, harga);
+    }
+
+    function handleFoodMartSubmit(service) {
+      const alamat = document.getElementById('f-alamat').value.trim() || 'Rumah Saya';
+      const [harga, item] = document.getElementById('f-item').value.split('|');
+      submitOrder(service, alamat, item, Number(harga));
+    }
+
+    function handleSendSubmit() {
+      const asal = document.getElementById('f-asal').value.trim() || 'Lokasi Jemput';
+      const penerima = document.getElementById('f-penerima').value.trim() || 'Penerima Dalam Kota';
+      const harga = Number(document.getElementById('f-paket').value);
+      submitOrder('KayoSend', asal, penerima, harga);
+    }
+
+    function handleDigitalSubmit(service) {
+      const nomor = document.getElementById('f-nomor').value.trim() || '081234567890';
+      const harga = Number(document.getElementById('f-nominal').value);
+      submitOrder(service, 'KayoPay Digital', nomor, harga);
+    }
+
+    function handleExtraSubmit(service) {
+      const detail = document.getElementById('f-detail').value.trim() || `Pesanan ${service}`;
+      submitOrder(service, 'Lokasi Saya', detail, 35000);
+    }
+
+    function openMoreServicesModal() {
+      showModal('Semua Layanan SIKAYO', `
+        <div class="grid grid-cols-2 gap-3">
+          <button type="button" onclick="openServiceModal('KayoMed')" class="p-3 bg-blue-50 rounded-xl text-left">
+            <p class="text-xs font-bold text-blue-700">KayoMed</p>
+            <p class="text-[10px] text-slate-500">Apotek & Tebus Obat</p>
+          </button>
+          <button type="button" onclick="openServiceModal('KayoBox')" class="p-3 bg-sky-50 rounded-xl text-left">
+            <p class="text-xs font-bold text-sky-700">KayoBox</p>
+            <p class="text-[10px] text-slate-500">Pickup & Truk Angkut</p>
+          </button>
+          <button type="button" onclick="openServiceModal('KayoClean')" class="p-3 bg-indigo-50 rounded-xl text-left">
+            <p class="text-xs font-bold text-indigo-700">KayoClean</p>
+            <p class="text-[10px] text-slate-500">Bersih Rumah & AC</p>
+          </button>
+          <button type="button" onclick="openServiceModal('KayoTix')" class="p-3 bg-cyan-50 rounded-xl text-left">
+            <p class="text-xs font-bold text-cyan-700">KayoTix</p>
+            <p class="text-[10px] text-slate-500">Tiket Bioskop & Event</p>
+          </button>
+        </div>
+      `);
+    }
+
+    function openInfoModal(title, text) {
+      showModal(title, `<p class="text-xs text-slate-600 whitespace-pre-line leading-relaxed">${text}</p>`);
+    }
+
+    // Proses Pesanan (Langsung Jalan + Sinkron ke Hostinger MySQL)
     async function submitOrder(layanan, lokasi_jemput, tujuan_atau_detail, hargaAsli) {
-      let diskon = state.activePromo ? Number(state.activePromo.potongan) : 0;
-      let total_harga = Math.max(0, hargaAsli - diskon);
+      const diskon = state.activePromo ? Number(state.activePromo.potongan) : 0;
+      const total_harga = Math.max(0, hargaAsli - diskon);
 
       if (state.saldo < total_harga) {
         showToast('Saldo KayoPay tidak cukup! Silakan Isi Saldo.');
         return;
       }
 
+      // Update tampilan langsung agar responsif
+      state.saldo -= total_harga;
+      state.xp += 15;
+      state.orders.unshift({ layanan, lokasi_jemput, tujuan_atau_detail, total_harga, status: 'Diproses' });
+      state.activePromo = null;
+      updateUI();
+      closeModal();
+      showToast(`Pesanan ${layanan} berhasil dibuat!`);
+
+      // Simpan ke database MySQL Hostinger di latar belakang
       try {
         const res = await fetch(`${API_URL}?action=create_order`, {
           method: 'POST',
@@ -447,19 +664,56 @@
           state.saldo = Number(data.saldo);
           state.xp = Number(data.xp);
           await loadOrders();
-        } else {
-          throw new Error();
+          updateUI();
         }
-      } catch (e) {
-        state.saldo -= total_harga;
-        state.xp += 15;
-        state.orders.unshift({ layanan, lokasi_jemput, tujuan_atau_detail, total_harga, status: 'Diproses' });
-      }
+      } catch (e) {}
+    }
 
-      state.activePromo = null;
+    function applyPromo(kode, potongan) {
+      state.activePromo = { kode, potongan };
       updateUI();
-      closeModal();
-      showToast(`Pesanan ${layanan} berhasil disimpan!`);
+      showToast(`Voucher ${kode} aktif (-${formatRp(potongan)})!`);
+    }
+
+    function renderOrders() {
+      const container = document.getElementById('order-history-list');
+      container.innerHTML = state.orders.map(o => `
+        <div class="border border-blue-100 bg-blue-50/30 rounded-xl p-3.5 flex items-center justify-between">
+          <div>
+            <span class="text-[10px] font-bold bg-blue-600 text-white px-2 py-0.5 rounded-full">${o.layanan}</span>
+            <h4 class="text-sm font-bold text-slate-800 mt-1">${o.tujuan_atau_detail}</h4>
+            <p class="text-[11px] text-slate-500">Dari: ${o.lokasi_jemput} • <b>${o.status}</b></p>
+          </div>
+          <span class="text-xs font-extrabold text-blue-700">${formatRp(o.total_harga)}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderPromos() {
+      const container = document.getElementById('promo-list');
+      container.innerHTML = state.promos.map(p => `
+        <div class="border border-blue-100 bg-blue-50/40 rounded-xl p-3.5 flex items-center justify-between">
+          <div>
+            <h4 class="text-sm font-bold text-slate-800">${p.judul}</h4>
+            <p class="text-xs text-slate-500">${p.deskripsi}</p>
+            <span class="text-[10px] font-bold text-blue-600">Kode: ${p.kode}</span>
+          </div>
+          <button type="button" onclick="applyPromo('${p.kode}', ${p.potongan})" class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-lg">Pakai</button>
+        </div>
+      `).join('');
+    }
+
+    function renderChats() {
+      const container = document.getElementById('chat-messages');
+      container.innerHTML = state.chats.map(c => `
+        <div class="flex flex-col ${c.is_user ? 'items-end' : 'items-start'}">
+          <span class="text-[10px] text-slate-400 mb-0.5">${c.pengirim}</span>
+          <div class="px-3.5 py-2 rounded-2xl text-xs max-w-[80%] ${c.is_user ? 'bg-blue-600 text-white rounded-br-none' : 'bg-slate-100 text-slate-800 rounded-bl-none'}">
+            ${c.pesan}
+          </div>
+        </div>
+      `).join('');
+      container.scrollTop = container.scrollHeight;
     }
 
     async function sendChat() {
@@ -480,11 +734,19 @@
         if (res.ok) {
           const cRes = await fetch(`${API_URL}?action=get_chats&user_id=${USER_ID}`);
           if (cRes.ok) state.chats = await cRes.json();
+          renderChats();
+          return;
         }
       } catch (e) {}
-      renderChats();
+
+      setTimeout(() => {
+        state.chats.push({ pengirim: 'Bantuan SIKAYO 24/7', pesan: 'Pesan diterima. Tim SIKAYO siap membantu Anda!', is_user: false });
+        renderChats();
+      }, 400);
     }
-    // Jalankan saat aplikasi dibuka
+
+    // Inisialisasi aplikasi
+    updateUI();
     initSyncMySQL();
   </script>
 </body>
