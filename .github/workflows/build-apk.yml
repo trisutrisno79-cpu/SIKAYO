@@ -24,15 +24,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Pastikan Struktur Folder & package.json Siap
+      - name: Siapkan Struktur & Konfigurasi
         run: |
-          # Buat package.json otomatis jika belum ada di root
           if [ ! -f package.json ]; then
             cat << 'EOF' > package.json
           {
             "name": "sikayo-app",
             "version": "1.0.0",
-            "description": "Aplikasi SIKAYO Super App",
             "dependencies": {
               "@capacitor/android": "^6.0.0",
               "@capacitor/cli": "^6.0.0",
@@ -42,7 +40,6 @@ jobs:
           EOF
           fi
 
-          # Buat capacitor.config.json otomatis jika belum ada di root
           if [ ! -f capacitor.config.json ]; then
             cat << 'EOF' > capacitor.config.json
           {
@@ -59,24 +56,17 @@ jobs:
           EOF
           fi
 
-          # Pastikan folder www/index.html ada (jika index.html ditaruh di luar, pindahkan ke www/)
           mkdir -p www
           if [ ! -f www/index.html ] && [ -f index.html ]; then
             cp index.html www/index.html
           fi
 
-      - name: Install Dependencies & Init Android
+      - name: Install & Build Android
         run: |
           npm install
           npx cap add android
           npx cap sync android
-
-      - name: Izinkan Koneksi HTTP ke Server MySQL
-        run: |
           sed -i 's/<application/<application android:usesCleartextTraffic="true"/g' android/app/src/main/AndroidManifest.xml
-
-      - name: Build Debug APK
-        run: |
           cd android
           chmod +x gradlew
           ./gradlew assembleDebug
